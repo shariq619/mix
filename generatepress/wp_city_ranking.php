@@ -2390,7 +2390,7 @@ if (!defined('ABSPATH')) {
                                                                                     class="fa fa-info my-icon-i"
                                                                                     aria-hidden="false"></i></a></h4>
                                                                     <label>
-                                                                        <select name="_sfm_region[]"
+                                                                        <select name="filter_region" id="filter_region"
                                                                                 class="sf-input-select" title="">
                                                                             <option class="sf-level-0 sf-item-0 sf-option-active"
                                                                                     selected="selected"
@@ -2454,13 +2454,13 @@ if (!defined('ABSPATH')) {
                                                                         <label><input
                                                                                     class="sf-input-range-number sf-range-min sf-input-number"
                                                                                     min="0" max="100" step="1"
-                                                                                    name="_sfm_safety[]" type="number"
+                                                                                    name="filter_safetymin" id="filter_safetymin" type="number"
                                                                                     value="0" title=""></label> <span
                                                                                 class="sf-range-values-seperator"> - </span>
                                                                         <label><input
                                                                                     class="sf-input-range-number sf-range-max sf-input-number"
                                                                                     min="0" max="100" step="1"
-                                                                                    name="_sfm_safety[]" type="number"
+                                                                                    name="filter_safetymax" id="filter_safetymax" type="number"
                                                                                     value="100" title=""></label>
                                                                         <div class="meta-slider"></div>
                                                                     </div>
@@ -2489,14 +2489,16 @@ if (!defined('ABSPATH')) {
                                                                         <label><input
                                                                                     class="sf-input-range-number sf-range-min sf-input-number"
                                                                                     min="0" max="100" step="1"
-                                                                                    name="_sfm_healthcare[]"
+                                                                                    name="filter_healthcaremin"
+                                                                                    id="filter_healthcaremin"
                                                                                     type="number"
                                                                                     value="0" title=""></label> <span
                                                                                 class="sf-range-values-seperator"> - </span>
                                                                         <label><input
                                                                                     class="sf-input-range-number sf-range-max sf-input-number"
                                                                                     min="0" max="100" step="1"
-                                                                                    name="_sfm_healthcare[]"
+                                                                                    name="filter_healthcaremax"
+                                                                                    id="filter_healthcaremax"
                                                                                     type="number"
                                                                                     value="100" title=""></label>
                                                                         <div class="meta-slider"></div>
@@ -2526,14 +2528,14 @@ if (!defined('ABSPATH')) {
                                                                         <label><input
                                                                                     class="sf-input-range-number sf-range-min sf-input-number"
                                                                                     min="0" max="100" step="1"
-                                                                                    name="_sfm_education[]"
+                                                                                    name="filter_educationmin" id="filter_educationmin"
                                                                                     type="number"
                                                                                     value="0" title=""></label> <span
                                                                                 class="sf-range-values-seperator"> - </span>
                                                                         <label><input
                                                                                     class="sf-input-range-number sf-range-max sf-input-number"
                                                                                     min="0" max="100" step="1"
-                                                                                    name="_sfm_education[]"
+                                                                                    name="filter_educationmax" id="filter_educationmax"
                                                                                     type="number"
                                                                                     value="100" title=""></label>
                                                                         <div class="meta-slider"></div>
@@ -2598,13 +2600,13 @@ if (!defined('ABSPATH')) {
                                                                         <label><input
                                                                                     class="sf-input-range-number sf-range-min sf-input-number"
                                                                                     min="0" max="100" step="1"
-                                                                                    name="_sfm_culture[]" type="number"
+                                                                                    name="filter_culturemin" id="filter_culturemin" type="number"
                                                                                     value="0" title=""></label> <span
                                                                                 class="sf-range-values-seperator"> - </span>
                                                                         <label><input
                                                                                     class="sf-input-range-number sf-range-max sf-input-number"
                                                                                     min="0" max="100" step="1"
-                                                                                    name="_sfm_culture[]" type="number"
+                                                                                    name="filter_culturemax" id="filter_culturemax" type="number"
                                                                                     value="100" title=""></label>
                                                                         <div class="meta-slider"></div>
                                                                     </div>
@@ -3926,6 +3928,7 @@ if (!defined('ABSPATH')) {
                                                  data-settings="{&quot;custom_columns&quot;:&quot;4&quot;,&quot;custom_row_gap&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:20,&quot;sizes&quot;:[]},&quot;custom_columns_tablet&quot;:&quot;2&quot;,&quot;custom_columns_mobile&quot;:&quot;1&quot;}"
                                                  data-widget_type="posts.custom">
                                                 <div class="elementor-widget-container">
+
                                                     <div class="ecs-posts elementor-posts-container elementor-posts   elementor-grid elementor-posts--skin-custom"
                                                          data-settings="{&quot;current_page&quot;:1,&quot;max_num_pages&quot;:&quot;5&quot;,&quot;load_method&quot;:&quot;&quot;,&quot;widget_id&quot;:&quot;624aae8&quot;,&quot;post_id&quot;:54,&quot;theme_id&quot;:54}">
 
@@ -3954,7 +3957,10 @@ if (!defined('ABSPATH')) {
                                                         $args = array(
                                                             'post_type' => 'location',
                                                             'numberposts' => '6',
-                                                            'orderby' => array('ID' => 'ASC')
+                                                            //'orderby' => array('ID' => 'ASC')
+                                                            'meta_key'  => 'country',
+                                                            'orderby'   => 'meta_value',
+                                                            'order' => 'DESC', //setting order direction
                                                         );
                                                         $query = new WP_Query($args);
                                                         while ($query->have_posts()) : $query->the_post();
@@ -4049,7 +4055,7 @@ if (!defined('ABSPATH')) {
                                                                                                                     Education
                                                                                                                 </div>
                                                                                                                 <div>
-                                                                                                                    <?php echo get_field('education_star', get_the_id()); ?>
+                                                                                                                    <?php echo get_field('education_hdr', get_the_id()); ?>
                                                                                                                 </div>
                                                                                                                 <!--
                                                                 <div class="elementor-star-rating"
@@ -4078,7 +4084,7 @@ if (!defined('ABSPATH')) {
                                                                                                                     Healthcare
                                                                                                                 </div>
                                                                                                                 <div>
-                                                                                                                    <?php echo get_field('healthcare_star', get_the_id()); ?>
+                                                                                                                    <?php echo get_field('healthcare', get_the_id()); ?>
                                                                                                                 </div>
                                                                                                                 <!--
                                                                 <div class="elementor-star-rating"
@@ -4107,7 +4113,7 @@ if (!defined('ABSPATH')) {
                                                                                                                     Safety
                                                                                                                 </div>
                                                                                                                 <div>
-                                                                                                                    <?php echo get_field('Safety_star', get_the_id()); ?>
+                                                                                                                    <?php echo get_field('safety', get_the_id()); ?>
                                                                                                                 </div>
                                                                                                                 <!--
                                                                 <div class="elementor-star-rating"

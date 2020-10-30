@@ -109,20 +109,118 @@ function my_admin_ajax()
 add_action('wp_ajax_my_action', 'my_callback');
 function my_callback()
 {
-    $city = $_POST['city'];
+    $city       = $_POST['city'];
+
+    if ($_POST['country'] && !empty($_POST['country'])) {
+        $country = array(
+            'key' => 'country',
+            'value' => $_POST['country']
+        );
+    }
+
+    if ($_POST['region'] && !empty($_POST['region'])) {
+        $region = array(
+            'key' => 'region',
+            'value' => $_POST['region']
+        );
+    }
+
+
+    // safety
+    if ($_POST['filter_safetymin'] && !empty($_POST['filter_safetymin'])) {
+        $filter_safetymin = $_POST['filter_safetymin'];
+    } else {
+        $filter_safetymin = 0;
+    }
+
+    if ($_POST['filter_safetymax'] && !empty($_POST['filter_safetymax'])) {
+        $filter_safetymax = $_POST['filter_safetymax'];
+    } else {
+        $filter_safetymax = 100;
+    }
+
+    // health
+    if ($_POST['filter_healthcaremin'] && !empty($_POST['filter_healthcaremin'])) {
+        $filter_healthcaremin = $_POST['filter_healthcaremin'];
+    } else {
+        $filter_healthcaremin = 0;
+    }
+
+    if ($_POST['filter_healthcaremax'] && !empty($_POST['filter_healthcaremax'])) {
+        $filter_healthcaremax = $_POST['filter_healthcaremax'];
+    } else {
+        $filter_healthcaremax = 100;
+    }
+
+    // education
+    if ($_POST['filter_educationmin'] && !empty($_POST['filter_educationmin'])) {
+        $filter_educationmin = $_POST['filter_educationmin'];
+    } else {
+        $filter_educationmin = 0;
+    }
+
+    if ($_POST['filter_educationmax'] && !empty($_POST['filter_educationmax'])) {
+        $filter_educationmax = $_POST['filter_educationmax'];
+    } else {
+        $filter_educationmax = 100;
+    }
+
+    // culture
+    if ($_POST['filter_culturemin'] && !empty($_POST['filter_culturemin'])) {
+        $filter_culturemin = $_POST['filter_culturemin'];
+    } else {
+        $filter_culturemin = 0;
+    }
+
+    if ($_POST['filter_culturemax'] && !empty($_POST['filter_culturemax'])) {
+        $filter_culturemax = $_POST['filter_culturemax'];
+    } else {
+        $filter_culturemax = 100;
+    }
+
     $args = array(
         'post_type' => 'location',
         'numberposts' => '1',
         's' => $city,
-        'orderby' => array('ID' => 'ASC')
+        //'orderby' => array('ID' => 'ASC'),
+        'orderby' => 'meta_value_num',
+        'meta_key' => 'safety',
+        'meta_query' => array(
+            $country,
+            $region,
+            array(
+                'key' => 'safety',
+                'value' => array($filter_safetymin, $filter_safetymax),
+                'type' => 'NUMERIC',
+                'compare' => 'BETWEEN'
+            ),
+            array(
+                'key' => 'healthcare',
+                'value' => array($filter_healthcaremin, $filter_healthcaremax),
+                'type' => 'NUMERIC',
+                'compare' => 'BETWEEN'
+            ),
+            array(
+                'key' => 'education_hdr',
+                'value' => array($filter_educationmin, $filter_educationmax),
+                'type' => 'NUMERIC',
+                'compare' => 'BETWEEN'
+            ),
+            array(
+                'key' => 'culture',
+                'value' => array($filter_culturemin, $filter_culturemax),
+                'type' => 'NUMERIC',
+                'compare' => 'BETWEEN'
+            )
+        )
     );
     $query = new WP_Query($args);
     $content = '';
     while ($query->have_posts()) : $query->the_post();
         $content .= '<article id="post-1413" class="elementor-post elementor-grid-item ecs-post-loop post-1413 location type-location status-publish has-post-thumbnail hentry">';
-        $img      =      get_the_post_thumbnail_url(get_the_ID(),'full');
+        $img = get_the_post_thumbnail_url(get_the_ID(), 'full');
         $content .= '<style id="elementor-post-dynamic-9307">';
-        $content .=  '.elementor-9307 .elementor-element.elementor-element-6fd3ffc2:not(.elementor-motion-effects-element-type-background) > .elementor-column-wrap, .elementor-9307 .elementor-element.elementor-element-6fd3ffc2 > .elementor-column-wrap > .elementor-motion-effects-container > .elementor-motion-effects-layer { background-image: url("'. $img .'"); }';
+        $content .= '.elementor-9307 .elementor-element.elementor-element-6fd3ffc2:not(.elementor-motion-effects-element-type-background) > .elementor-column-wrap, .elementor-9307 .elementor-element.elementor-element-6fd3ffc2 > .elementor-column-wrap > .elementor-motion-effects-container > .elementor-motion-effects-layer { background-image: url("' . $img . '"); }';
         $content .= '</style>';
         $content .= '<div data-elementor-type="page" data-elementor-id="9307" class="elementor elementor-9307" data-elementor-settings="[]">';
         $content .= '<div class="elementor-inner">';
@@ -131,50 +229,50 @@ function my_callback()
         $content .= '<div class="elementor-container elementor-column-gap-no">';
         $content .= '<div class="elementor-row">';
         $content .= '<style>';
-        $content .= '#post-1413 .elementor-9307 .elementor-element.elementor-element-6fd3ffc2:not(.elementor-motion-effects-element-type-background) > .elementor-column-wrap, #post-1413 .elementor-9307 .elementor-element.elementor-element-6fd3ffc2 > .elementor-column-wrap > .elementor-motion-effects-container > .elementor-motion-effects-layer { background-image: url("'. $img .'"); }';
+        $content .= '#post-1413 .elementor-9307 .elementor-element.elementor-element-6fd3ffc2:not(.elementor-motion-effects-element-type-background) > .elementor-column-wrap, #post-1413 .elementor-9307 .elementor-element.elementor-element-6fd3ffc2 > .elementor-column-wrap > .elementor-motion-effects-container > .elementor-motion-effects-layer { background-image: url("' . $img . '"); }';
         $content .= '</style>';
-        $link      =  get_permalink(get_the_id());
-        $content .= '<div class="make-column-clickable-elementor elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-6fd3ffc2" style="cursor: pointer;" data-column-clickable="'. $link .'" data-column-clickable-blank="_blank" data-id="6fd3ffc2" data-element_type="column" data-settings="{&quot;background_background&quot;:&quot;classic&quot; }">';
+        $link = get_permalink(get_the_id());
+        $content .= '<div class="make-column-clickable-elementor elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-6fd3ffc2" style="cursor: pointer;" data-column-clickable="' . $link . '" data-column-clickable-blank="_blank" data-id="6fd3ffc2" data-element_type="column" data-settings="{&quot;background_background&quot;:&quot;classic&quot; }">';
         $content .= '<div class="elementor-column-wrap elementor-element-populated">';
         $content .= '<div class="elementor-background-overlay"></div>';
         $content .= '<div class="elementor-widget-wrap">';
         $content .= '<div class="elementor-element elementor-element-d8e2beb elementor-widget elementor-widget-shortcode" data-id="d8e2beb" data-element_type="widget" data-widget_type="shortcode.default">';
-            $content .= '<div class="elementor-widget-container">';
-                $content .= '<div class="elementor-shortcode">';
-                    $content .=  get_the_id();
-                $content .= '</div>';
-            $content .= '</div>';
+        $content .= '<div class="elementor-widget-container">';
+        $content .= '<div class="elementor-shortcode">';
+        $content .= get_the_id();
+        $content .= '</div>';
+        $content .= '</div>';
         $content .= '</div>';
         $content .= '<div class="elementor-element elementor-element-2ca3f94 elementor-widget elementor-widget-theme-post-title elementor-page-title elementor-widget-heading" data-id="2ca3f94" data-element_type="widget" data-widget_type="theme-post-title.default">';
-            $content .= '<div class="elementor-widget-container">';
-                $content .= '<h2 class="elementor-heading-title elementor-size-default">';
-                    $content .=  get_the_title();
-                $content .= '</h2>';
-            $content .= '</div>';
+        $content .= '<div class="elementor-widget-container">';
+        $content .= '<h2 class="elementor-heading-title elementor-size-default">';
+        $content .= get_the_title();
+        $content .= '</h2>';
+        $content .= '</div>';
         $content .= '</div>';
         $content .= '<div class="elementor-element elementor-element-fd5f71b elementor-star-rating--align-center elementor--star-style-star_unicode elementor-widget elementor-widget-star-rating" data-id="fd5f71b" data-element_type="widget" data-widget_type="star-rating.default">';
-             $content .= '<div class="elementor-widget-container">';
-                $content .= '<div class="elementor-star-rating__wrapper">';
-                   $content .= '<div class="elementor-star-rating__title">';
-                    $content .= 'Overall';
-                   $content .= '</div>';
-                   $content .= '<div>';
-                      $content .=  get_field('overall_score', get_the_id());
-                   $content .= '</div>';
-                $content .= '</div>';
-             $content .= '</div>';
+        $content .= '<div class="elementor-widget-container">';
+        $content .= '<div class="elementor-star-rating__wrapper">';
+        $content .= '<div class="elementor-star-rating__title">';
+        $content .= 'Overall';
+        $content .= '</div>';
+        $content .= '<div>';
+        $content .= get_field('overall_score', get_the_id());
+        $content .= '</div>';
+        $content .= '</div>';
+        $content .= '</div>';
         $content .= '</div>';
         $content .= '<div class="elementor-element elementor-element-ed04e68 elementor-star-rating--align-center elementor--star-style-star_unicode elementor-widget elementor-widget-star-rating" data-id="ed04e68" data-element_type="widget" data-widget_type="star-rating.default">';
-            $content .= '<div class="elementor-widget-container">';
-                        $content .= '<div class="elementor-star-rating__wrapper">';
-                            $content .= '<div class="elementor-star-rating__title">';
-                            $content .= 'Education';
-                            $content .= '</div>';
-                        $content .= '<div>';
-                        $content .= get_field('education_star', get_the_id());
-                    $content .= '</div>';
-                $content .= '</div>';
-            $content .= '</div>';
+        $content .= '<div class="elementor-widget-container">';
+        $content .= '<div class="elementor-star-rating__wrapper">';
+        $content .= '<div class="elementor-star-rating__title">';
+        $content .= 'Education';
+        $content .= '</div>';
+        $content .= '<div>';
+        $content .= get_field('education_hdr', get_the_id());
+        $content .= '</div>';
+        $content .= '</div>';
+        $content .= '</div>';
         $content .= '</div>';
         $content .= '<div class="elementor-element elementor-element-c762a7f elementor-star-rating--align-center elementor--star-style-star_unicode elementor-widget elementor-widget-star-rating"
         data-id="c762a7f"
@@ -186,7 +284,7 @@ function my_callback()
         $content .= 'Healthcare';
         $content .= '</div>';
         $content .= '<div>';
-        $content .= get_field('healthcare_star', get_the_id());
+        $content .= get_field('healthcare', get_the_id());
         $content .= '</div>';
         $content .= '</div>';
         $content .= '</div>';
@@ -201,7 +299,7 @@ function my_callback()
         $content .= 'Safety';
         $content .= '</div>';
         $content .= '<div>';
-        $content .= get_field('Safety_star', get_the_id());
+        $content .= get_field('safety', get_the_id());
         $content .= '</div>';
         $content .= '</div>';
         $content .= '</div>';
